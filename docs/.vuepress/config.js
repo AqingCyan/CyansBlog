@@ -154,7 +154,9 @@ module.exports = {
         children: [
           'vuex_cover',
           'vuex_install',
-          'vuex_state'
+          'vuex_state',
+          'vuex_webpack',
+          'vuex_getter'
         ]
       }],
       // '/FE/React/': [{
