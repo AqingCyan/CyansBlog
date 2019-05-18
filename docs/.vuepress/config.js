@@ -145,8 +145,16 @@ module.exports = {
           'StyleAndV-if',
           'ListAndV-for',
           'Components',
-          'Slot',
-          'VuesArt',
+          'Slot'
+        ]
+      },
+      {
+        title: 'Vuex学习指南',
+        collapsable: false,
+        children: [
+          'vuex_cover',
+          'vuex_install',
+          'vuex_state'
         ]
       }],
       // '/FE/React/': [{
@@ -186,8 +194,7 @@ module.exports = {
       //     '3',
       //     '4',
       //   ]
-      // }
-      // ],
+      // }],
       // '/Algorithm/Leetcode/': [{
       //   title: 'Leetcode算法解析',
       //   collapsable: false,
