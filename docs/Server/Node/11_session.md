@@ -30,12 +30,14 @@ req.session =SESSION_DATA[userId]
 
 与此同时，我们还需要将设置的cookie做一个修改，现在cookie要设置的是userid而不是具体的信息了
 
+## 修改登录业务
+
 ```js
 // 解析session
 let needSetCookie = false // 用来判断是需要设置cookie
 let userId = req.cookie.userid
 if (userId) {
-  if (SESSION_DATA[userId]) {
+  if (!SESSION_DATA[userId]) {
     SESSION_DATA[userId] = {}
   }
 } else {
@@ -43,7 +45,7 @@ if (userId) {
   userId = `${Date.now()}_${Math.random()}`
   SESSION_DATA[userId] = {}
 }
-req.session =SESSION_DATA[userId]
+req.session = SESSION_DATA[userId]
 ```
 
 此时，设置cookie的操作放在了app.js中，记得转移设置过期时间的`getCookieExpires()`方法
@@ -55,7 +57,7 @@ if (blogResult) {
   blogResult.then(blogData => {
     if (needSetCookie) {
       // 设置cookie
-      res.setHeader('Set-Cookie', `username=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+      res.setHeader('Set-Cookie', `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
     }
     res.end(JSON.stringify(blogData))
   })
@@ -67,13 +69,17 @@ if (userResult) {
   userResult.then(userData => {
     if (needSetCookie) {
       // 设置cookie
-      res.setHeader('Set-Cookie', `username=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+      res.setHeader('Set-Cookie', `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
     }
     res.end(JSON.stringify(userData))
   })
   return
 }
 ```
+
+::: tip
+⚠️设置cookie是设置的`userid`，不是`username`了，注意一下！
+:::
 
 最后，在路由的具体处理中，设置session
 
@@ -107,5 +113,5 @@ if (method === 'GET' && req.path === '/api/user/login-test') {
 我们后面判断的内容都是以session为主，cookie的设置转移到了app.js中。
 
 ::: tip
-这里的业务改动较大，具体可以查看blog-1下的src目录中的源码。✨
+这里的业务改动较大，具体可以查看blog-1下的src目录中的源码。✨另外需要注意的是，`req.session = SESSION_DATA[userId]`的作用是将两个变量指向同一个对象。
 :::

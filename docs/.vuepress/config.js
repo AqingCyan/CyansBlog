@@ -12,7 +12,7 @@ module.exports = {
     lineNumbers: true // 代码块显示行号
   },
   themeConfig: {
-    sidebarDepth: 2,
+    sidebarDepth: 1,
     editLinks: true,
     editLinkText: '在 GitHub 上编辑此页',
     lastUpdated: '上次更新',
@@ -198,16 +198,6 @@ module.exports = {
       //     '4',
       //   ]
       // }],
-      // '/OS/': [{
-      //   title: 'Linux操作系统',
-      //   collapsable: false,
-      //   children: [
-      //     ['cover', '啥'],
-      //     '2',
-      //     '3',
-      //     '4',
-      //   ]
-      // }],
       // '/Server/Net/': [{
       //   title: '计算机网络基础',
       //   collapsable: false,
@@ -232,7 +222,9 @@ module.exports = {
           '07_use_mysql',
           '08_node_mysql',
           '09_api_sql',
-          '10_login'
+          '10_login',
+          '11_session',
+          '12_redis'
         ]
       }],
       '/Server/KoaServer/': [{
