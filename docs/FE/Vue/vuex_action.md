@@ -5,14 +5,16 @@ Action 类似于 mutatio，但是它有两点与 Mutation 是不同：
 - Action 提交的是 mutation，而不是直接变更状态。
 - Action 可以包含任意异步操作。(Mutation只能说同步的方法)
 
+## action的定义
+
 ```js
 const store = new Vuex.Store({
   state: {
     count: 1
   },
   mutations: {
-    increment(state, payload) {
-      state.count += palload.amount;
+    increment(state) {
+      state.count++;
     }
   },
   actions: {
@@ -63,4 +65,92 @@ actions: {
 }
 ```
 
+::: tip
 其实看代码的话，是进行了一些异步操作，然后再`commit`，触发`mutation`。这与`mutation`中必须是同步代码不冲突。
+:::
+
+## 与mutation对比
+
+Actions 支持同样的载荷方式和对象方式进行分发
+
+```js
+mutations: {
+  increment (state, payload) {
+    state.count += palload.amount;
+  }
+},
+actions: {
+  increment(context, count) {
+    context.commit('increment', count);
+  }
+}
+```
+
+```js
+// 以载荷形式分发
+store.dispatch('increment', {
+  amount: 10
+})
+
+// 以对象形式分发
+store.dispatch({
+  type: 'increment',
+  amount: 10
+})
+```
+
+## 组件中使用Action
+
+可以使用笨笨的方法，去使用`store`调用`dispatch`触发
+
+```js
+// 在组件中
+methods: {
+  addCount() {
+    this.$store.dispatch("increment")
+  }
+}
+```
+
+Vuex 也提供了 mapAction。除了在组件中使用 this.$store.dispatch('xxx') 分发 action，也能使用 mapActions 辅助函数将组件的 methods 映射为 store.dispatch 调用（需要先在根节点注入 store）：
+
+```js
+methods: {
+  ...Vuex.mapActions([
+    'increment', // 将 `this.increment()` 映射为 `this.$store.dispatch('increment')`
+
+    // `mapActions` 也支持载荷：
+    'incrementBy' // 将 `this.incrementBy(amount)` 映射为 `this.$store.dispatch('incrementBy', amount)`
+  ]),
+  ...Vuex.mapActions({
+    addCount: 'increment' // 将 `this.add()` 映射为 `this.$store.dispatch('increment')`
+  })
+}
+```
+
+## 组合Action 解决异步问题
+
+Action 通常是异步的，那么如何知道 action 什么时候结束呢？更重要的是，我们如何才能组合多个 action，以处理更加复杂的异步流程？
+
+首先，你需要明白 store.dispatch 可以处理被触发的 action 的处理函数返回的 Promise，并且 store.dispatch 仍旧返回 Promise：
+
+```js
+actions: {
+  actionA ({ commit }) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        commit('someMutation')
+        resolve()
+      }, 1000)
+    })
+  }
+}
+```
+
+Prmoise可以用`then`方法，那么一切的控制就变得明了：
+
+```js
+store.dispatch('actionA').then(() => {
+  // ...
+})
+```

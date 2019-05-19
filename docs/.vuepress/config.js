@@ -158,7 +158,8 @@ module.exports = {
           'vuex_webpack',
           'vuex_getter',
           'vuex_mutation',
-          'vuex_action'
+          'vuex_action',
+          'vuex_module'
         ]
       }],
       // '/FE/React/': [{
